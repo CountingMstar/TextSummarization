@@ -220,20 +220,35 @@ def main(args: argparse.Namespace):
             clipnorm=args.clipnorm,
         )
 
+        # model.compile(
+        #     optimizer=optimizer,
+        #     loss={
+        #         "logits": SparseCategoricalCrossentropy(model_config.pad_token_id, from_logits=True),
+        #         "encoder_last_hidden_state": None,
+        #     },
+        #     metrics={"logits": SparseCategoricalAccuracy(model_config.pad_token_id)},
+        # )
+
         model.compile(
             optimizer=optimizer,
             loss={
                 "logits": SparseCategoricalCrossentropy(model_config.pad_token_id, from_logits=True),
-                "encoder_last_hidden_state": None,
             },
             metrics={"logits": SparseCategoricalAccuracy(model_config.pad_token_id)},
         )
 
+        print('================')
+        print(optimizer)
+        print({"logits": SparseCategoricalCrossentropy(model_config.pad_token_id, from_logits=True),})
+        print({"logits": SparseCategoricalAccuracy(model_config.pad_token_id)})
+
+        # model.compile(
+        #     optimizer='adam',
+        #     loss=tf.keras.losses.BinaryCrossentropy(),
+        #     metrics=[tf.keras.metrics.Accuracy(), tf.keras.metrics.Precision(), tf.keras.metrics.Recall()]
+        # )
+
         logger.info("[+] Start training")
-        
-        print('****************')
-        print(args.output_path)
-        print(args.tensorboard_update_freq)
         
         model.fit(
             train_dataset,
@@ -241,21 +256,21 @@ def main(args: argparse.Namespace):
             initial_epoch=args.skip_epochs,
             epochs=args.epochs,
             steps_per_epoch=args.steps_per_epoch,
-            # callbacks=[
-            #     tf.keras.callbacks.ModelCheckpoint(
-            #         path_join(
-            #             args.output_path,
-            #             "models",
-            #             "model-{epoch}epoch-{val_loss:.4f}loss_{val_logits_accuracy:.4f}acc.ckpt",
-            #         ),
-            #         save_weights_only=True,
-            #         verbose=1,
-            #     ),
-            #     tf.keras.callbacks.TensorBoard(
-            #         path_join(args.output_path, "logs"),
-            #         update_freq=args.tensorboard_update_freq if args.tensorboard_update_freq else "batch",
-            #     ),
-            # ],
+            callbacks=[
+                tf.keras.callbacks.ModelCheckpoint(
+                    path_join(
+                        args.output_path,
+                        "models",
+                        "model-{epoch}epoch-{val_loss:.4f}loss_{val_logits_accuracy:.4f}acc.ckpt",
+                    ),
+                    save_weights_only=True,
+                    verbose=1,
+                ),
+                tf.keras.callbacks.TensorBoard(
+                    path_join(args.output_path, "logs"),
+                    update_freq=args.tensorboard_update_freq if args.tensorboard_update_freq else "batch",
+                ),
+            ],
         )
         logger.info("[+] Finished training!")
 
