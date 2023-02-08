@@ -32,3 +32,7 @@ print(tf.__version__)
 
 import keras 
 print(keras.__version__)
+
+import transformers
+
+print(transformers.__version__)

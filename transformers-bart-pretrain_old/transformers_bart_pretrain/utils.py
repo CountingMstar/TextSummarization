@@ -106,8 +106,11 @@ def set_random_seed(seed: int):
 def set_mixed_precision(device: str):
     """Set mixed precision on"""
     mixed_type = "mixed_bfloat16" if device == "TPU" else "mixed_float16"
+
+    #####################################################
     policy = tf.keras.mixed_precision.Policy(mixed_type)
     tf.keras.mixed_precision.set_global_policy(policy)
+    #####################################################
 
 
 def get_device_strategy(device) -> tf.distribute.Strategy:
@@ -128,6 +131,8 @@ def get_device_strategy(device) -> tf.distribute.Strategy:
         #####################################################
 
         # devices = tf.config.list_physical_devices("GPU")
+        # print('&&&&&&&&&&')
+        # print(devices)
         # if len(devices) == 0:
         #     raise RuntimeError("Cannot find GPU!")
         # for device in devices:
