@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+import copy
 
 
 class LayerNorm(nn.Module):
@@ -50,3 +51,7 @@ class FeedForward(nn.Module):
         x = self.dropout(x)
         x = self.w_2(x)
         return x
+
+def clones(module, N):
+    "N개의 동일한 모듈을 복사해 생성"
+    return nn.ModuleList([copy.deepcopy(module) for _ in range(N)])
