@@ -1,30 +1,8 @@
 # https://velog.io/@aqaqsubin/Transformer-Attention-Is-All-You-Need#position-wise-feed-forward-network
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import math
-
-
-class PositionalEncoding(nn.Module):
-    def __init__(self, d_model, max_len=512, dropout=0):
-        super(PositionalEncoding, self).__init__()
-        self.dropout = nn.Dropout(dropout)
-
-        pe = torch.zeros(max_len, d_model)
-        pe.requires_grad = False
-        position = torch.arrange(0, max_len).unsqueeze(1)
-        base = torch.ones(d_model // 2).fill_(10000)
-        pow_term = torch.arange(0, d_model, 2) / torch.tensor(d_model, dtype=torch.float32)
-        div_term = torch.pow(base, pow_term)
-
-        pe[:, 0::2] = torch.sin(position / div_term)
-        pe[:, 1::2] = torch.cos(position / div_term)
-
-        pe = pe.unsqueeze(0)
-
-        self.register_buffer('pe', pe)
-
-    def forward(self, x):
-        return self.pe[:, :x.size(1)]
 
 
 class LayerNorm(nn.Module):
@@ -40,9 +18,8 @@ class LayerNorm(nn.Module):
         x = self.a_2 * (x - mean) / (std + self.eps) + self.b_2
         return x
 
-
 class ResidualConnection(nn.Module):
-    def __init__(self, size, dropout):
+    def __init__(self, size, dropout=0.1):
         super(ResidualConnection, self).__init__()
         self.norm = LayerNorm(size)
         self.dropout = nn.Dropout(dropout)
@@ -54,12 +31,22 @@ class ResidualConnection(nn.Module):
         x = x + y
         return x
 
-
 class GELU(nn.Module):
     def forward(self, x):
         gelu = 0.5 * x * (1 + torch.tanh(math.sqrt(2 / math.pi) * (x + 0.044715 * torch.pow(x, 3))))
         return gelu
 
 class FeedForward(nn.Module):
-    def __init__(self, d_model, d):
-        super().__init__()
+    def __init__(self, d_model, d_ff, dropout=0.1, activation=GELU()):
+        super(FeedForward, self).__init__()
+        self.w_1 = nn.Linear(d_model, d_ff)
+        self.w_2 = nn.Linear(d_ff, d_model)
+        self.dropout = nn.Dropout(dropout)
+        self.activation = activation
+
+    def forward(self, x):
+        x = self.w_1(x)
+        x = self.activation(x)
+        x = self.dropout(x)
+        x = self.w_2(x)
+        return x
