@@ -12,10 +12,11 @@ class BERT(nn.Module):
         self.dropout = dropout
 
         self.feed_forward_hidden = hidden * 4
-        self.embedding = BertEmbedding(vocab_size, embed_size=hidden, dropout)
-        self.transformer_encoder_blocks = clones(TransformerEncoder(head_num=attention_heads, d_model=hidden, d_ff=self.feed_forward_hidden, dropout), n_layers)
+        self.embedding = BertEmbedding(vocab_size, embed_size=hidden, dropout=dropout)
+        self.transformer_encoder_blocks = clones(TransformerEncoder(head_num=attention_heads, d_model=hidden, d_ff=self.feed_forward_hidden, dropout=dropout), n_layers)
 
     def forward(self, x, segment_label):
+        # True, False making 
         # ex) x = tensor[1, 2, 0], (x > 0) == [True, True, False]
         mask = (x > 0).unsqueeze(1).repeat(1, x.size(1), 1).unsqueeze(1)
         x = self.embedding(x, segment_label)
