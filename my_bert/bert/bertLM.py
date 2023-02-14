@@ -1,6 +1,10 @@
 import torch.nn as nn
 
 class MaskedLanguageModel(nn.Module):
+    """
+    masked input sequence로부터 원래 token을 예측하는 n-class classification 문제
+    n-class = vocab_size
+    """
     def __init__(self, hidden, vocab_size):
         super(MaskedLanguageModel, self).__init__()
 
