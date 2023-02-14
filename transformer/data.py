@@ -3,7 +3,9 @@
 @when : 2019-10-29
 @homepage : https://github.com/gusdnd852
 """
+# 하이퍼 파라미터 불러오기
 from conf import *
+
 from util.data_loader import DataLoader
 from util.tokenizer import Tokenizer
 

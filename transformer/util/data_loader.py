@@ -33,6 +33,8 @@ class DataLoader:
                                 lower=True, batch_first=True)
 
         train_data, valid_data, test_data = Multi30k.splits(exts=self.ext, fields=(self.source, self.target))
+        print('^^^^^^^^^^')
+        print(train_data)
         return train_data, valid_data, test_data
 
     def build_vocab(self, train_data, min_freq):
