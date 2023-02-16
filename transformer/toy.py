@@ -1,15 +1,18 @@
 import torchtext
+import torchtext
 from torchtext.legacy.datasets import Multi30k
 from torchtext.legacy.data import Field, BucketIterator
 
 # define the fields
-SRC = Field(tokenize='spacy', init_token='<sos>', eos_token='<eos>', lower=True)
-TRG = Field(tokenize='spacy', init_token='<sos>', eos_token='<eos>', lower=True)
+SRC = Field(tokenize="spacy", init_token="<sos>", eos_token="<eos>", lower=True)
+TRG = Field(tokenize="spacy", init_token="<sos>", eos_token="<eos>", lower=True)
 
 # load the dataset
-train_data, valid_data, test_data = Multi30k.splits(exts=('.de', '.en'), fields=(SRC, TRG))
+train_data, valid_data, test_data = Multi30k.splits(
+    exts=(".de", ".en"), fields=(SRC, TRG)
+)
 
-print('0000000000000000')
+print("0000000000000000")
 print(train_data)
 
 for i, example in enumerate(train_data[:10]):
